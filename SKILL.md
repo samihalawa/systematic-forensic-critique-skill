@@ -25,12 +25,15 @@ Choose before doing anything else:
   - use when the user wants the same forensic critique plus immediate follow-through
   - complete the forensic pass first, then execute only the smallest justified actions
 
-If unclear, default to `forensic-only mode`.
+If the surrounding thread is an active implementation thread and the user is critiquing why work did or did not happen, default to `critique-and-execute mode`, not `forensic-only mode`.
 
 ## Hard Rules
 
 - Read the full selected scope sequentially. Do not skip messages.
 - Build a source ledger first. Mark every source as full or partial coverage.
+- Never treat post-compaction visible context as the whole conversation unless you prove no richer source exists.
+- If the conversation was compacted, exported, summarized, or truncated, explicitly search for the richer source first: exported transcript file, local session history, pasted full transcript, or repo-local conversation export.
+- If a richer source exists and you did not read it, mark the analysis as partial and say exactly what was missing.
 - Count exactly when the source format allows exact counting.
 - If exact counting is blocked, say which metric is blocked and why. Do not fake precision.
 - If the user explicitly asks for a complete systematic table, produce one row per message. No grouping.
@@ -46,10 +49,26 @@ If unclear, default to `forensic-only mode`.
 
 Before analysis, list:
 
-- current conversation scope
+- current visible conversation scope
+- richer conversation sources if compaction/truncation/export is suspected
 - pasted prompts or logs
 - linked docs or files
 - any repo/code context if present
+
+Compaction recovery is mandatory when any of these appear:
+
+- the user mentions `/export`, transcript files, compaction, summaries, or previous iterations
+- the visible context clearly starts mid-stream
+- the visible context references earlier work that is not present in the current window
+
+Search order for richer conversation truth:
+
+1. user-provided export/transcript path
+2. pasted full transcript in the thread
+3. local session history tied to the cwd or thread
+4. repo-local conversation export files
+
+Do not say "full conversation" if you only analyzed post-compaction visible turns.
 
 For each source record:
 
@@ -71,6 +90,11 @@ Report:
 - conversation block map
 
 If timestamps are unavailable, say so explicitly and continue with message order.
+
+Also report:
+
+- `scope verdict`: `full conversation`, `full selected artifact`, or `partial/post-compaction`
+- `why this scope is sufficient` or `what richer source was missing`
 
 ### Phase 3. Systematic Message Table
 
@@ -136,6 +160,8 @@ Each action must be:
 
 In `critique-and-execute mode`, perform the smallest justified actions immediately after the list.
 
+If the forensic pass reveals that the prior agent stopped at critique when code should have been written, the first execution step is to inspect the missing implementation surfaces directly before filing tickets or deferring.
+
 ## Output Shape
 
 Default output:
@@ -159,6 +185,8 @@ between `Forensic Metadata` and `Coverage Map`.
 Before finishing, ask:
 
 - Did I confuse quoted instructions with real instructions?
+- Did I silently narrow scope to post-compaction context?
+- Did I fail to look for an exported or richer transcript after signs of compaction?
 - Did I overfit to the most dramatic prompt instead of the real goal?
 - Did I add forensic ceremony without new evidence?
 - Did I claim exactness without exact counts?
