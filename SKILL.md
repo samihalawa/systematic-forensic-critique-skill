@@ -43,6 +43,8 @@ If the surrounding thread is an active implementation thread and the user is cri
 - Prefer the smallest critique that changes behavior. Do not copy bloated forensic prompt theater into every task.
 - Critique only what is supported by evidence. Quote instead of paraphrasing when making a strong claim.
 - In `critique-and-execute mode`, do not broaden into speculative cleanup. Execute the smallest justified next actions only.
+- If the critique involves a code bug, reopen the current repo surface before calling it unresolved. Historical logs are leads, not proof of current breakage.
+- If the critique involves issue creation or backlog cleanup, do not create, extend, or close code issues from second-hand audit text alone. Require a current-state repo verdict first.
 - If the user asks for only code issues, only regressions, or explicitly excludes opportunities, enforce that filter and keep ideas/product opportunities out of the findings.
 
 ## Required Workflow
@@ -137,6 +139,7 @@ For each item:
 - keep or change
 - smallest better alternative
 - whether it was over-engineered, hardcoded, or goal-misaligned
+- whether it created stale backlog noise by treating unverified evidence as live
 
 ### Phase 5. Pattern Detection
 
@@ -171,6 +174,7 @@ Each action must be:
 In `critique-and-execute mode`, perform the smallest justified actions immediately after the list.
 
 If the forensic pass reveals that the prior agent stopped at critique when code should have been written, the first execution step is to inspect the missing implementation surfaces directly before filing tickets or deferring.
+If the forensic pass reveals that prior agents created or retained stale code tickets, the first execution step is to verify the current repo and then close, downgrade, or refuse to recreate the stale item.
 
 If the user asks whether a finding is `new vs already tracked`, compare it against the live tracker before labeling it new.
 
@@ -209,5 +213,7 @@ Before finishing, ask:
 - Did I add forensic ceremony without new evidence?
 - Did I claim exactness without exact counts?
 - Did I stop at critique when the user wanted next actions?
+- Did I treat a historical bug report as current truth without reopening the current repo?
+- Did I turn second-hand audit text into backlog state without verifying the code first?
 
 If yes, fix the answer before returning it.
