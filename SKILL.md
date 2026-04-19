@@ -31,6 +31,7 @@ If the surrounding thread is an active implementation thread and the user is cri
 
 - Read the full selected scope sequentially. Do not skip messages.
 - Build a source ledger first. Mark every source as full or partial coverage.
+- If the user provides explicit file paths, exported transcripts, or named artifacts, those exact artifacts are mandatory primary sources. Read them before expanding to broader history.
 - Never treat post-compaction visible context as the whole conversation unless you prove no richer source exists.
 - If the conversation was compacted, exported, summarized, or truncated, explicitly search for the richer source first: exported transcript file, local session history, pasted full transcript, or repo-local conversation export.
 - If a richer source exists and you did not read it, mark the analysis as partial and say exactly what was missing.
@@ -42,6 +43,7 @@ If the surrounding thread is an active implementation thread and the user is cri
 - Prefer the smallest critique that changes behavior. Do not copy bloated forensic prompt theater into every task.
 - Critique only what is supported by evidence. Quote instead of paraphrasing when making a strong claim.
 - In `critique-and-execute mode`, do not broaden into speculative cleanup. Execute the smallest justified next actions only.
+- If the user asks for only code issues, only regressions, or explicitly excludes opportunities, enforce that filter and keep ideas/product opportunities out of the findings.
 
 ## Required Workflow
 
@@ -69,6 +71,8 @@ Search order for richer conversation truth:
 4. repo-local conversation export files
 
 Do not say "full conversation" if you only analyzed post-compaction visible turns.
+
+If the user names exact session files or exact conversation artifacts, add a `requested-artifact coverage` line that says whether each named file was fully read, partially read, or missing.
 
 For each source record:
 
@@ -147,6 +151,12 @@ Look specifically for:
 - treating logs as instructions
 - over-broad fixes when a narrow one was enough
 
+When the user asks for tracker-aware output, also detect:
+
+- duplicate issue creation from already-tracked evidence
+- stale closure from docs without current proof
+- cleanup claims made while the checklist still shows unresolved work
+
 ### Phase 6. Recommendation And Execution
 
 Always end with one prioritized action list.
@@ -162,6 +172,8 @@ In `critique-and-execute mode`, perform the smallest justified actions immediate
 
 If the forensic pass reveals that the prior agent stopped at critique when code should have been written, the first execution step is to inspect the missing implementation surfaces directly before filing tickets or deferring.
 
+If the user asks whether a finding is `new vs already tracked`, compare it against the live tracker before labeling it new.
+
 ## Output Shape
 
 Default output:
@@ -173,6 +185,12 @@ Default output:
 5. `Pattern Detection`
 6. `Simplified Recommendation`
 7. `Executed Actions`
+
+If the user explicitly asks for tracker status or false finishes, also include:
+
+- `Candidate Issues`
+- `Skill Deltas`
+- `False-Finish Patterns`
 
 If the user explicitly asks for exhaustive/systematic/per-message forensics, insert:
 
